@@ -33,7 +33,7 @@ class WorkGroup : public WorkComponent
          * @brief The constructor for a WorkGroup object
          * @param name The name of the object
          */
-        explicit WorkGroup(const string name);
+        explicit WorkGroup(const string& name);
 
         /**
          * @brief The destructor for a WorkGroup object

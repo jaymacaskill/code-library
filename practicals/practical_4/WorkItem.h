@@ -71,7 +71,7 @@ class WorkItem : public WorkComponent
          * @brief Returns true if the state is not DoneState
          * @return Whether the object is active or not
          */
-        bool isActive() const; // return progressPercent >= 100
+        bool isActive() const; // return progressPercent < 100
         // check the progress percent
 
         /**
@@ -91,6 +91,12 @@ class WorkItem : public WorkComponent
          * @return The progress percent member
          */
         int getProgress() const;
+
+        /**
+         * @brief Returns the blocked hours
+         * @return The blocked hours member
+         */
+        int getBlockedHours() const;
 
     private:
         string name; /**< The name of this object */

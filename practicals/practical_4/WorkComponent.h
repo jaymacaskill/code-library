@@ -7,6 +7,8 @@
 
 // WorkComponent.h
 
+// has no matching .cpp, no implementations needed
+
 #ifndef WORKCOMPONENT_H
 #define WORKCOMPONENT_H
 
@@ -30,7 +32,7 @@ class WorkComponent
         /**
          * @brief Virtual destructor for the WorkComponent class
          */
-        virtual ~WorkComponent();
+        virtual ~WorkComponent() { };
 
         /**
          * @brief Getter for the name attribute
