@@ -49,6 +49,7 @@ class WorkGroup : public WorkComponent
 
         /// @copydoc EventComponent::execute
         void execute() override;
+        // Here we count and print how many children made progress versus how many were blocked in addition to typical behaviour
 
         /// @copydoc EventComponent::createIterator
         WorkIterator* createIterator() override;
@@ -63,8 +64,8 @@ class WorkGroup : public WorkComponent
         void appendTo(vector<WorkComponent*>& out) override;
 
     private:
-        string name /**< The name of this object */
-        vector<WorkComponent*> children /**< The children of this object (may be EventItems or other EventGroups) */
+        string name; /**< The name of this object */
+        vector<WorkComponent*> children; /**< The children of this object (may be EventItems or other EventGroups) */
 };
 
 #endif // WORKGROUP_H

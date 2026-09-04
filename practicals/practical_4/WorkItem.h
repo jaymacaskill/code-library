@@ -71,11 +71,32 @@ class WorkItem : public WorkComponent
          * @brief Returns true if the state is not DoneState
          * @return Whether the object is active or not
          */
-        bool isActive() const; // return !(state == DoneState)
+        bool isActive() const; // return progressPercent >= 100
+        // check the progress percent
+
+        /**
+         * @brief Adds progress to the total progress percent member
+         * @param amount The amount of progress to add
+         */
+        void addProgress(int amount);
+
+        /**
+         * @brief Increments the duration for which the work component has been blocked
+         * @param hours How much longer the work has been blocked for
+         */
+        void incrementBlockedTime(int hours);
+
+        /**
+         * @brief Returns the progress percent member
+         * @return The progress percent member
+         */
+        int getProgress() const;
 
     private:
         string name; /**< The name of this object */
         TaskState* state; /**< The state of this object */
+        int progressPercent; /**< The progress of the work component */
+        int blockedHours; /**< How long the work has been blocked */
 };
 
 

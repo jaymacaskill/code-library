@@ -37,9 +37,11 @@ class TaskState
 
         /**
          * @brief Used to move through different states, e.g. from Todo to InProgress
+         * Meaningfully handles rejection of state change
          * @param task The item moving through states
+         * @return Whether we successfully moved to the next state
          */
-        virtual void next(WorkItem* task) = 0;
+        virtual bool next(WorkItem* task) = 0;
 
         /**
          * @brief The getter for the name of the object
@@ -62,7 +64,7 @@ class TodoState : public TaskState
          * @brief Todo -> InProgress transition
          * @param task The item that will undergo state change
          */
-        void next(WorkItem* task) override;
+        bool next(WorkItem* task) override;
 
         /// @copydoc TaskState::getName
         string getName() const override;
@@ -77,12 +79,14 @@ class InProgressState : public TaskState
     
         /// @copydoc TaskState::handle
         void handle(WorkItem* task) override;
+        // Adds progress in, if the progress is completed et the state to done
 
         /**
          * @brief InProgress -> Done (or Blocked, but not in this function) transition
          * @param task The item that will undergo state change
+         * @return Whether we successfully moved to the next state
          */
-        void next(WorkItem* task) override;
+        bool next(WorkItem* task) override;
 
         /// @copydoc TaskState::getName
         string getName() const override;
@@ -97,12 +101,14 @@ class BlockedState : public TaskState
     
         /// @copydoc TaskState::handle
         void handle(WorkItem* task) override;
+        // does not add progress, but increments blocked time
 
         /**
          * @brief Blocked -> InProgress transition
          * @param task The item that will undergo state change
+         * @return Whether we successfully moved to the next state
          */
-        void next(WorkItem* task) override;
+        bool next(WorkItem* task) override;
 
         /// @copydoc TaskState::getName
         string getName() const override;
@@ -111,18 +117,20 @@ class BlockedState : public TaskState
 /**
  * @brief The state of a completed work component
  */
-class DoneState : public DoneState
+class DoneState : public TaskState
 {
     public:
     
         /// @copydoc TaskState::handle
         void handle(WorkItem* task) override;
+        // does nothing
 
         /**
          * @brief Invalid, done is a terminal state
          * @param task The item that will undergo state change
+         * @return Whether we successfully moved to the next state (false here)
          */
-        void next(WorkItem* task) override;
+        bool next(WorkItem* task) override;
 
         /// @copydoc TaskState::getName
         string getName() const override;
