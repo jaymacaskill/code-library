@@ -1,9 +1,9 @@
-// Amira Ajanaku
-// Senzo Lukhele
+// Amira Ajanaku (25111699)
+// Senzo Lukhele (24691497)
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 4 September 2026
+// Last Modified: 5 September 2026
 
 // WorkComponent.h
 
@@ -54,9 +54,15 @@ class WorkComponent
 
         /**
          * @brief The Iterator factory method
-         * @return An iterator
+         * @return A DepthFirstIterator
          */
         virtual WorkIterator* createIterator() = 0;
+
+        /**
+         * @brief The (active) Iterator factory method
+         * @return An ActiveOnlyIterator
+         */
+        virtual WorkIterator* createActiveIterator() = 0;
 
         /**
          * @brief Adds a child to the children vector of a WorkGroup object
@@ -67,8 +73,9 @@ class WorkComponent
         /**
          * @brief Removes a child from the children vector of a WorkGroup object
          * @param child The child to be removed
+         * @return The WorkComponent that was removed, to prevent orphaning and to allow relocation
          */
-        virtual void remove(WorkComponent* child) { }
+        virtual WorkComponent* remove(WorkComponent* child) { }
 
         /**
          * @brief Used by iterators to flatten the tree

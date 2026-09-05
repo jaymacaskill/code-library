@@ -1,9 +1,9 @@
-// Amira Ajanaku
-// Senzo Lukhele
+// Amira Ajanaku (25111699)
+// Senzo Lukhele (24691497)
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 4 September 2026
+// Last Modified: 5 September 2026
 
 // WorkItem.h
 
@@ -56,6 +56,9 @@ class WorkItem : public WorkComponent
         /// @copydoc WorkComponent::createIterator
         WorkIterator* createIterator() override;
 
+        /// @copydoc WorkComponent::createActiveIterator 
+        WorkIterator* createActiveIterator() override;
+
         /// @copydoc WorkComponent::appendTo
         void appendTo(vector <WorkComponent*>& out) override;
 
@@ -101,8 +104,8 @@ class WorkItem : public WorkComponent
     private:
         string name; /**< The name of this object */
         TaskState* state; /**< The state of this object */
-        int progressPercent; /**< The progress of the work component */
-        int blockedHours; /**< How long the work has been blocked */
+        int progressPercent = 0; /**< The progress of the work component */
+        int blockedHours = 0; /**< How long the work has been blocked */
 };
 
 

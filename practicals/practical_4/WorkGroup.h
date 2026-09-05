@@ -1,9 +1,9 @@
-// Amira Ajanaku
-// Senzo Lukhele
+// Amira Ajanaku (25111699)
+// Senzo Lukhele (24691497)
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 4 September 2026
+// Last Modified: 5 September 2026
 
 // WorkGroup.h
 
@@ -41,26 +41,29 @@ class WorkGroup : public WorkComponent
          */
         virtual ~WorkGroup();
 
-        /// @copydoc EventComponent::getName
+        /// @copydoc WorkComponent::getName
         string getName() const override;
 
-        /// @copydoc EventComponent::display
+        /// @copydoc WorkComponent::display
         void display(int depth = 0) const override;
 
-        /// @copydoc EventComponent::execute
+        /// @copydoc WorkComponent::execute
         void execute() override;
         // Here we count and print how many children made progress versus how many were blocked in addition to typical behaviour
 
-        /// @copydoc EventComponent::createIterator
+        /// @copydoc WorkComponent::createIterator
         WorkIterator* createIterator() override;
 
-        /// @copydoc EventComponent::add
+        /// @copydoc WorkComponent::createActiveIterator
+        WorkIterator* createActiveIterator() override;
+
+        /// @copydoc WorkComponent::add
         void add(WorkComponent* child) override;
 
-        /// @copydoc EventComponent::remove
-        void remove(WorkComponent* child) override;
+        /// @copydoc WorkComponent::remove
+        WorkComponent* remove(WorkComponent* child) override;
 
-        /// @copydoc EventComponent::appendTo
+        /// @copydoc WorkComponent::appendTo
         void appendTo(vector<WorkComponent*>& out) override;
 
     private:
