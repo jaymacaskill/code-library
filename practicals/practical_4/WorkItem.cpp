@@ -23,12 +23,14 @@ using namespace std;
 WorkItem::WorkItem(const string& name)
 {
     this->name = name;
+    this->state = new TodoState;
+    this->progressPercent = 0;
+    this->blockedHours = 0;
 }
 
 WorkItem::~WorkItem()
 {
-    delete state;
-    state = nullptr;
+    if (state) { delete state; state = nullptr; }
 }
 
 string WorkItem::getName() const
@@ -38,20 +40,38 @@ string WorkItem::getName() const
 
 void WorkItem::display(int depth = 0) const
 {
-    // TODO
-    throw "Not yet implemented";
+    for (int j = 0; j < depth; j ++)
+    {
+        cout << "  ";
+    }
+    cout << "- " << name << " (" << state->getName() << ")";
+
+    if (progressPercent > 0 && progressPercent < 100)
+        cout << " " << progressPercent << "% done";
+    else if (progressPercent >= 100)
+        cout << " ⭐ Completed!";
+    if (blockedHours > 0)
+        cout << " ⛔ Blocked for " << blockedHours << "h";
+
+    cout << endl;
 }
 
 void WorkItem::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+    if (state)
+        state->handle(this);
+    else
+        cout << "⚠️ Error! This task has no state!\n";
 }
 
 WorkIterator* WorkItem::createIterator()
 {
-    // TODO
-    throw "Not yet implemented";
+    return new DepthFirstIterator(this);
+}
+
+WorkIterator* WorkItem::createActiveIterator()
+{
+    return new ActiveOnlyIterator(this);
 }
 
 void WorkItem::appendTo(vector <WorkComponent*>& out)
@@ -61,7 +81,7 @@ void WorkItem::appendTo(vector <WorkComponent*>& out)
 
 void WorkItem::setState(TaskState* newState)
 {
-    delete state;
+    if (state) delete state;
     state = newState;
 }
 

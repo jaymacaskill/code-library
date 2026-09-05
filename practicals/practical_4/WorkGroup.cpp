@@ -29,8 +29,9 @@ WorkGroup::WorkGroup(const string& name)
 
 WorkGroup::~WorkGroup()
 {
-    // TODO
-    throw "Not yet implemented";
+    for (size_t i = 0; i < children.size(); i ++)
+        delete children[i];
+    children.clear();
 }
 
 string WorkGroup::getName() const
@@ -40,32 +41,63 @@ string WorkGroup::getName() const
 
 void WorkGroup::display(int depth = 0) const
 {
-    // TODO
-    throw "Not yet implemented";
+    for (int j = 0; j < depth; j ++)
+    {
+        cout << "  ";
+    }
+    cout << "[Group] " << name << endl;
+
+    for (size_t j = 0; j < children.size(); j ++)
+    {
+        children[j]->display(depth + 1);
+    }
 }
 
 void WorkGroup::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+    for (size_t i = 0; i < children.size(); i ++)
+        children[i]->execute();
 }
 
 WorkIterator* WorkGroup::createIterator()
 {
-    // TODO
-    throw "Not yet implemented";
+    return new DepthFirstIterator(this);
+}
+
+WorkIterator* WorkGroup::createActiveIterator()
+{
+    return new ActiveOnlyIterator(this);
 }
 
 void WorkGroup::add(WorkComponent* child)
 {
-    // TODO
-    throw "Not yet implemented";
+    for (size_t i = 0; i < children.size(); i ++)
+    {
+        if (children[i] == child)
+        {
+            cout << "⚠️ This WorkComponent has already been added to this WorkGroup!\n";
+            return;
+        }
+    }
+    children.push_back(child);
+    cout << "✅ WorkComponent added to WorkGroup successfully!\n";
 }
 
-void WorkGroup::remove(WorkComponent* child)
+WorkComponent* WorkGroup::remove(WorkComponent* child)
 {
-    // TODO
-    throw "Not yet implemented";
+    for (size_t i = 0; i < children.size(); i ++)
+    {
+        if (children[i] == child)
+        {
+            WorkComponent* removed = children[i];
+            children.erase(children.begin() + i);
+            cout << "✅ WorkComponent removed from WorkGroup successfully!\n";
+            return removed; /* here we return the removed child to prevent
+            orphaning and allow restoration of independent living */
+        }
+    }
+    cout << "⚠️ This WorkComponent could not be found in this WorkGroup!\n";
+    return nullptr;
 }
 
 void WorkGroup::appendTo(vector<WorkComponent*>& out)

@@ -54,9 +54,15 @@ class WorkComponent
 
         /**
          * @brief The Iterator factory method
-         * @return An iterator
+         * @return A DepthFirstIterator
          */
         virtual WorkIterator* createIterator() = 0;
+
+        /**
+         * @brief The (active) Iterator factory method
+         * @return An ActiveOnlyIterator
+         */
+        virtual WorkIterator* createActiveIterator() = 0;
 
         /**
          * @brief Adds a child to the children vector of a WorkGroup object
@@ -67,8 +73,9 @@ class WorkComponent
         /**
          * @brief Removes a child from the children vector of a WorkGroup object
          * @param child The child to be removed
+         * @return The WorkComponent that was removed, to prevent orphaning and to allow relocation
          */
-        virtual void remove(WorkComponent* child) { }
+        virtual WorkComponent* remove(WorkComponent* child) { }
 
         /**
          * @brief Used by iterators to flatten the tree

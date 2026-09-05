@@ -56,6 +56,9 @@ class WorkItem : public WorkComponent
         /// @copydoc WorkComponent::createIterator
         WorkIterator* createIterator() override;
 
+        /// @copydoc WorkComponent::createActiveIterator 
+        WorkIterator* createActiveIterator() override;
+
         /// @copydoc WorkComponent::appendTo
         void appendTo(vector <WorkComponent*>& out) override;
 
@@ -101,8 +104,8 @@ class WorkItem : public WorkComponent
     private:
         string name; /**< The name of this object */
         TaskState* state; /**< The state of this object */
-        int progressPercent; /**< The progress of the work component */
-        int blockedHours; /**< How long the work has been blocked */
+        int progressPercent = 0; /**< The progress of the work component */
+        int blockedHours = 0; /**< How long the work has been blocked */
 };
 
 
