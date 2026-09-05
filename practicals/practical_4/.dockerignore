@@ -1,0 +1,5 @@
+.git
+*.o
+taskforge
+docs/
+*.pdf
