@@ -1,9 +1,9 @@
-// Amira Ajanaku
-// Senzo Lukhele
+// Amira Ajanaku (25111699)
+// Senzo Lukhele (24691497)
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 4 September 2026
+// Last Modified: 5 September 2026
 
 // WorkItem.h
 
