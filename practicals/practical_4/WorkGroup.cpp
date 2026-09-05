@@ -7,9 +7,6 @@
 
 // WorkGroup.cpp
 
-#ifndef WORKGROUP_CPP
-#define WORKGROUP_CPP
-
 #include "WorkGroup.h"
 #include "WorkComponent.h"
 #include "WorkIterator.h"
@@ -27,10 +24,13 @@ WorkGroup::WorkGroup(const string& name)
     this->name = name;
 }
 
+//Deletion cascades down ato destroy the whole subtree beneath it
 WorkGroup::~WorkGroup()
 {
-    // TODO
-    throw "Not yet implemented";
+   for (WorkComponent* child : children) {
+    delete child;
+   }
+   children.clear();
 }
 
 string WorkGroup::getName() const
@@ -38,34 +38,39 @@ string WorkGroup::getName() const
     return this->name;
 }
 
-void WorkGroup::display(int depth = 0) const
+void WorkGroup::display(int depth) const
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << string(depth*2, ' ') << "+ " << name << endl;
+    for (WorkComponent* child : children) {
+        child->display(depth + 1);
+    }
 }
 
 void WorkGroup::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+    for (WorkComponent* child : children) {
+        child->execute();
+    }
 }
 
 WorkIterator* WorkGroup::createIterator()
 {
-    // TODO
-    throw "Not yet implemented";
+    return new DepthFirstIterator(this);
 }
 
 void WorkGroup::add(WorkComponent* child)
 {
-    // TODO
-    throw "Not yet implemented";
+   children.push_back(child);
 }
 
 void WorkGroup::remove(WorkComponent* child)
 {
-    // TODO
-    throw "Not yet implemented";
+    for (size_t i = 0; i < children.size(); i++) {
+        if (children[i] == child) {
+            children.erase(children.begin() + i); //removal
+            break; //to stop after the first match
+        }
+    }
 }
 
 void WorkGroup::appendTo(vector<WorkComponent*>& out)
@@ -74,5 +79,3 @@ void WorkGroup::appendTo(vector<WorkComponent*>& out)
     for (size_t i = 0; i < children.size(); i ++)
         children[i]->appendTo(out);
 }
-
-#endif // WORKGROUP_CPP

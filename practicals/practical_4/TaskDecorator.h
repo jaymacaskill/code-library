@@ -51,7 +51,10 @@ class TaskDecorator : public WorkComponent
 
         /// @copydoc WorkComponent::appendTo
         void appendTo(vector<WorkComponent*>& out) override;
-
+        
+        /// @copydoc WorkComponent::display
+        void display(int depth = 0) const override;
+        
     protected:
         WorkComponent* wrapped; /**< The component to be wrapped */
 };

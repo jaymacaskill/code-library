@@ -7,9 +7,6 @@
 
 // TaskState.cpp
 
-#ifndef TASKSTATE_CPP
-#define TASKSTATE_CPP
-
 #include "TaskState.h"
 #include "WorkItem.h"
 
@@ -23,7 +20,7 @@ using namespace std;
 
 void TodoState::handle(WorkItem* task)
 {
-    // no-op
+    return;
 }
 
 bool TodoState::next(WorkItem* task)
@@ -42,14 +39,18 @@ string TodoState::getName() const
 void InProgressState::handle(WorkItem* task)
 {
     task->addProgress(25);
-    if (task->getProgress() >= 100)
+    if (task->getProgress() >= 100) {
         task->setState(new DoneState);
+    }
 }
 
 bool InProgressState::next(WorkItem* task)
 {
-    // TODO
-    throw "Not yet implemented";
+   if (task->getProgress() >= 100) {
+     task->setState(new DoneState);
+     return true;
+   }
+   return false;
 }
 
 string InProgressState::getName() const
@@ -62,12 +63,14 @@ string InProgressState::getName() const
 void BlockedState::handle(WorkItem* task)
 {
     task->incrementBlockedTime(1);
+    cout << task->getName() << " is blocked for " << task->getBlockedHours() << " hours" << endl;
 }
 
 bool BlockedState::next(WorkItem* task)
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << task->getName() << ": Blocked -> InProgress" << endl;
+    task->setState(new InProgressState);
+    return true;
 }
 
 string BlockedState::getName() const
@@ -92,4 +95,3 @@ string DoneState::getName() const
     return "Done";
 }
 
-#endif // TASKSTATE_CPP

@@ -7,9 +7,6 @@
 
 // WorkItem.cpp
 
-#ifndef WORKITEM_CPP
-#define WORKITEM_CPP
-
 #include <iostream>
 #include <vector>
 
@@ -20,10 +17,10 @@
 
 using namespace std;
 
+//Every new item starts with the TodoState
 WorkItem::WorkItem(const string& name)
-{
-    this->name = name;
-}
+ : name(name), state(new TodoState()), progressPercent(0), blockedHours(0)
+{ }
 
 WorkItem::~WorkItem()
 {
@@ -36,16 +33,15 @@ string WorkItem::getName() const
     return this->name;
 }
 
-void WorkItem::display(int depth = 0) const
+void WorkItem::display(int depth) const
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << string(depth*2, ' ') << "- " << name << " [" << state->getName()
+         << ", " << progressPercent << "%]" << endl;
 }
 
 void WorkItem::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+   state->handle(this);
 }
 
 WorkIterator* WorkItem::createIterator()
@@ -76,8 +72,10 @@ bool WorkItem::isActive() const
 }
 
 void WorkItem::addProgress(int amount)
-{
-    this->progressPercent += amount;
+{   
+    progressPercent += amount;
+    if (progressPercent > 100) 
+      progressPercent = 100;
 }
 
 void WorkItem::incrementBlockedTime(int hours)
@@ -94,5 +92,3 @@ int WorkItem::getBlockedHours() const
 {
     return this->blockedHours;
 }
-
-#endif // WORKITEM_CPP

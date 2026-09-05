@@ -7,12 +7,11 @@
 
 // TaskDecorator.cpp
 
-#ifndef TASKDECORATOR_CPP
-#define TASKDECORATOR_CPP
-
 #include "WorkComponent.h"
 #include "WorkIterator.h"
 #include "TaskDecorator.h"
+
+#include "WorkItem.h"
 
 #include <iostream>
 
@@ -28,11 +27,9 @@ TaskDecorator::TaskDecorator(WorkComponent* wrapped)
     this->wrapped = wrapped;
 }
 
+//Does not the wrapped object, no ownership
 TaskDecorator::~TaskDecorator()
-{    
-    // TODO
-    throw "Not yet implemented";
-}
+{ }
 
 string TaskDecorator::getName() const
 {
@@ -41,48 +38,61 @@ string TaskDecorator::getName() const
 
 void TaskDecorator::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+    wrapped->execute();
 }
 
 WorkIterator* TaskDecorator::createIterator()
 {
-    // TODO
-    throw "Not yet implemented";
+    return wrapped->createIterator();
 }
 
 void TaskDecorator::appendTo(vector<WorkComponent*>& out)
 {
-    out.push_back(this);
+    wrapped->appendTo(out);
+}
+
+void TaskDecorator::display(int depth) const 
+{
+    wrapped->display(depth);
 }
 
 // === PRIORITY DECORATOR === //
 
-PriorityDecorator::PriorityDecorator(WorkComponent* wrapped, int priority) : TaskDecorator(wrapped)
+PriorityDecorator::PriorityDecorator(WorkComponent* wrapped, int priority) 
+ : TaskDecorator(wrapped)
 {
     this->priority = priority;
 }
 
 void PriorityDecorator::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+   wrapped->execute();
+   WorkItem* item = dynamic_cast<WorkItem*>(wrapped);
+   if (item != nullptr && item->getState()->getName() == "Done") {
+    return;
+    //since we don't add priority handling to a completed task
+   }
+   cout << "[Priority " << priority << "] " << wrapped->getName() << " flagged." << endl;
 }
 
-void PriorityDecorator::display(int depth = 0) const
+void PriorityDecorator::display(int depth) const
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << string(depth*2, ' ') << "- [P" << priority << "] " << wrapped->getName();
+    WorkItem* item = dynamic_cast<WorkItem*>(wrapped);
+    if (item != nullptr) {
+        cout << " [" << item->getState()->getName() << ", " << item->getProgress() << "%]";
+    }
+    cout << endl;
 }
 
 // === LOGGING DECORATOR === //
 
-LoggingDecorator::LoggingDecorator(WorkComponent* wrapped) : TaskDecorator(wrapped) { }
+LoggingDecorator::LoggingDecorator(WorkComponent* wrapped) 
+: TaskDecorator(wrapped) { }
 
 void LoggingDecorator::execute()
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << "[LOG] Executing " << wrapped->getName() << "..." << endl;
+   wrapped->execute();
+   cout << "[LOG] Finsihing executing " << wrapped->getName() << "." << endl;
 }
-
-#endif // TASKDECORATOR_CPP

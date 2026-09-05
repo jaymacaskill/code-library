@@ -7,11 +7,10 @@
 
 // WorkIterator.cpp
 
-#ifndef WORKITERATOR_CPP
-#define WORKITERATOR_CPP
 
 #include "WorkIterator.h"
 #include "WorkComponent.h"
+#include "WorkItem.h"
 
 #include <iostream>
 #include <vector>
@@ -23,41 +22,46 @@ using namespace std;
 // === DEPTH FIRST ITERATOR === //
 
 DepthFirstIterator::DepthFirstIterator(WorkComponent* root)
+ : position(0)
 {
-    // TODO
-    throw "Not yet implemented";
+    if (root) {
+        root->appendTo(flattened);
+    }
 }
 
 bool DepthFirstIterator::hasNext()
 {
-    // TODO
-    throw "Not yet implemented";
+    return (position < flattened.size());
 }
 
-WorkComponent* WorkIterator::next()
+WorkComponent* DepthFirstIterator::next()
 {
-    // TODO
-    throw "Not yet implemented";
+    return flattened[position++];
 }
 
 // ==== ACTIVE ONLY ITERATOR ==== //
 
 ActiveOnlyIterator::ActiveOnlyIterator(WorkComponent* root)
+ : position(0)
 {
-    // TODO
-    throw "Not yet implemented";
+    vector<WorkComponent*> all;
+    if (root) {
+        root->appendTo(all);
+    }
+    for (WorkComponent* x : all) {
+        WorkItem* item = dynamic_cast<WorkItem*>(x);
+        if (item != nullptr && item->isActive()) {
+            flattened.push_back(x);
+        }
+    }
 }
 
 bool ActiveOnlyIterator::hasNext()
 {
-    // TODO
-    throw "Not yet implemented";
+   return (position < flattened.size());
 }
 
 WorkComponent* ActiveOnlyIterator::next()
 {
-    // TODO
-    throw "Not yet implemented";
+    return flattened[position++];
 }
-
-#endif // WORKITERATOR_CPP
