@@ -23,7 +23,7 @@ using namespace std;
 
 void TodoState::handle(WorkItem* task)
 {
-    // no-op
+    cout << "🎯 Todo: [" << task->getName() << "]" << endl;
 }
 
 bool TodoState::next(WorkItem* task)
@@ -42,14 +42,24 @@ string TodoState::getName() const
 void InProgressState::handle(WorkItem* task)
 {
     task->addProgress(25);
+    cout << "🔄 [" << task->getName() << "] Progress: " << task->getProgress() << "%" << endl;
+    
     if (task->getProgress() >= 100)
         task->setState(new DoneState);
 }
 
 bool InProgressState::next(WorkItem* task)
 {
-    // TODO
-    throw "Not yet implemented";
+    if (task->getProgress() >= 100)
+    {
+        cout << "[" << task->getName() << "] is complete! ⭐" << endl;
+        task->setState(new DoneState);
+        return true;
+    }
+
+    cout << "⚠️ [" << task->getName() << "] is only " << task->getProgress() << "% complete" << endl;
+    return false;
+
 }
 
 string InProgressState::getName() const
@@ -61,13 +71,15 @@ string InProgressState::getName() const
 
 void BlockedState::handle(WorkItem* task)
 {
+    cout << "❌ [" << task->getName() << "] has been blocked for " << task->getBlockedHours() << "h" << endl;
     task->incrementBlockedTime(1);
 }
 
 bool BlockedState::next(WorkItem* task)
 {
-    // TODO
-    throw "Not yet implemented";
+    cout << "🔎 Unblocking " << task->getName() << endl;
+    task->unblock();
+    return true;
 }
 
 string BlockedState::getName() const
@@ -79,11 +91,13 @@ string BlockedState::getName() const
 
 void DoneState::handle(WorkItem* task)
 {
+    cout << "[" << task->getName() << "] Complete! ⭐" << endl;
     return;
 }
 
 bool DoneState::next(WorkItem* task)
 {
+    cout << "[" << task->getName() << "] is already complete! ⭐" << endl;
     return false;
 }
 

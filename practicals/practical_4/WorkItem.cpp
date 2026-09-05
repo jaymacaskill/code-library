@@ -56,6 +56,18 @@ void WorkItem::display(int depth = 0) const
     cout << endl;
 }
 
+void WorkItem::block()
+{
+    if (state->getName() == "In Progress" || state->getName() == "Todo")
+        this->setState(new BlockedState);
+}
+
+void WorkItem::unblock()
+{
+    if (state->getName() == "Blocked")
+        this->setState(new InProgressState);
+}
+
 void WorkItem::execute()
 {
     if (state)

@@ -13,6 +13,7 @@
 #include "WorkGroup.h"
 #include "WorkComponent.h"
 #include "WorkIterator.h"
+#include "WorkItem.h"
 
 #include <iostream>
 #include <vector>
@@ -45,7 +46,8 @@ void WorkGroup::display(int depth = 0) const
     {
         cout << "  ";
     }
-    cout << "[Group] " << name << endl;
+
+    cout << "[Group] " << name << ": " << calculateState() << endl;
 
     for (size_t j = 0; j < children.size(); j ++)
     {
@@ -53,10 +55,62 @@ void WorkGroup::display(int depth = 0) const
     }
 }
 
+const string& WorkGroup::calculateState() const
+{
+    if (children.empty())
+    {
+        return "Empty";
+    }
+
+    int todo = 0;
+    int progress = 0;
+    int blocked = 0;
+    bool done = false;
+
+    for (size_t i = 0; i < children.size(); i ++)
+    {
+        WorkItem* item = dynamic_cast<WorkItem*>(children[i]);
+        if (item)
+        {
+            if (item->getState()->getName() == "In Progress") progress ++;
+            else if (item->getState()->getName() == "Todo") todo ++;
+            else if (item->getState()->getName() == "Blocked") blocked ++;
+        }
+        else
+        {
+            WorkGroup* group = dynamic_cast<WorkGroup*>(children[i]);
+            if (group)
+            {
+                string state = group->calculateState();
+                if (state == "Blocked ⚠️") blocked ++;
+                else if (state == "In Progress 🕓") progress ++;
+                else if (state == "Todo 🎯") todo ++;
+                else { /* nothing */ }
+            }
+        }
+    }
+
+    done = (todo == 0) && (progress == 0) && (blocked == 0);
+
+    if (done)
+        return "Complete! ⭐";
+
+    if (blocked > 0)
+        return "Blocked ⚠️";
+
+    if (progress > 0)
+        return "In Progress 🕓";
+
+    return "Todo 🎯";
+}
+
 void WorkGroup::execute()
 {
+    cout << "▶️ Executing [" << name << "]" << endl;
     for (size_t i = 0; i < children.size(); i ++)
         children[i]->execute();
+
+    cout << "✅ " << name << " Executed. State: " << calculateState() << endl;
 }
 
 WorkIterator* WorkGroup::createIterator()
