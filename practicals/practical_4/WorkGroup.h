@@ -66,6 +66,11 @@ class WorkGroup : public WorkComponent
         /// @copydoc WorkComponent::appendTo
         void appendTo(vector<WorkComponent*>& out) override;
 
+        /**
+         * @brief Prints out the aggregate state for the group
+         */
+        const string& calculateState() const;
+
     private:
         string name; /**< The name of this object */
         vector<WorkComponent*> children; /**< The children of this object (may be EventItems or other EventGroups) */

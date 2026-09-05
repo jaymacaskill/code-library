@@ -53,6 +53,16 @@ class WorkItem : public WorkComponent
         /// @copydoc WorkComponent::execute
         void execute() override;
 
+        /**
+         * @brief Sets the WorkItem state to blocked
+         */
+        void block();
+
+        /**
+         * @brief Sets the WorkItem state to in progress
+         */
+        void unblock();
+
         /// @copydoc WorkComponent::createIterator
         WorkIterator* createIterator() override;
 
@@ -102,8 +112,8 @@ class WorkItem : public WorkComponent
         int getBlockedHours() const;
 
     private:
-        string name; /**< The name of this object */
         TaskState* state; /**< The state of this object */
+        string name; /**< The name of this object */
         int progressPercent = 0; /**< The progress of the work component */
         int blockedHours = 0; /**< How long the work has been blocked */
 };
