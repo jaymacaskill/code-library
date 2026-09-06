@@ -125,6 +125,11 @@ WorkIterator* WorkGroup::createActiveIterator()
 
 void WorkGroup::add(WorkComponent* child)
 {
+    if (!child)
+    {
+        cout << "⚠️ Cannot add a null component!\n";
+        return;
+    }
     for (size_t i = 0; i < children.size(); i ++)
     {
         if (children[i] == child)

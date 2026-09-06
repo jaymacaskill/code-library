@@ -148,14 +148,14 @@ void LoggingDecorator::execute()
     char* dt = ctime(&now);
     dt[strlen(dt) - 1] = '\0';
 
-    cout << " 📝 [LOG] " << dt << " Starting execution of: " << wrapped->getName() << endl;
+    cout << "📝 [LOG] " << dt << " Starting execution of: " << wrapped->getName() << endl;
     wrapped->execute();
 
     time_t end = time(nullptr);
     dt = ctime(&end);
     dt[strlen(dt) - 1] = '\0';
 
-    cout << " 📝 [LOG] " << dt << " Completed execution of: " << wrapped->getName() << endl;
+    cout << "📝 [LOG] " << dt << " Completed execution of: " << wrapped->getName() << endl;
 }
 
 #endif // TASKDECORATOR_CPP
