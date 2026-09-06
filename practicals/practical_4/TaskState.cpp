@@ -24,6 +24,7 @@ using namespace std;
 void TodoState::handle(WorkItem* task)
 {
     cout << "🎯 Todo: [" << task->getName() << "]" << endl;
+    this->next(task);
 }
 
 bool TodoState::next(WorkItem* task)
