@@ -3,7 +3,7 @@
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 5 September 2026
+// Last Modified: 6 September 2026
 
 // WorkGroup.cpp
 
@@ -40,7 +40,7 @@ string WorkGroup::getName() const
     return this->name;
 }
 
-void WorkGroup::display(int depth = 0) const
+void WorkGroup::display(int depth) const
 {
     for (int j = 0; j < depth; j ++)
     {
@@ -55,7 +55,7 @@ void WorkGroup::display(int depth = 0) const
     }
 }
 
-const string& WorkGroup::calculateState() const
+string WorkGroup::calculateState() const
 {
     if (children.empty())
     {
@@ -159,6 +159,21 @@ void WorkGroup::appendTo(vector<WorkComponent*>& out)
     out.push_back(this);
     for (size_t i = 0; i < children.size(); i ++)
         children[i]->appendTo(out);
+}
+
+void WorkGroup::decorate(WorkComponent* target, WorkComponent* decorator)
+{
+    for (size_t i = 0; i < children.size(); i ++)
+    {
+        if (children[i] == target)
+        {
+           children[i] = decorator; // replaces the child with the decorated componenet,
+           // decorator now owns the child
+            return;
+        }
+    }
+
+    cout << "⚠️ Target not found in this group!\n";
 }
 
 #endif // WORKGROUP_CPP

@@ -3,7 +3,7 @@
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 5 September 2026
+// Last Modified: 6 September 2026
 
 // WorkGroup.h
 
@@ -22,9 +22,9 @@ class WorkComponent;
 class WorkIterator;
 
 /**
- * @brief The Composite in the Composite design pattern
- * A group of work which may contain other groups or items
- */
+* @brief The Composite in the Composite design pattern
+* A group of work which may contain other groups or items
+*/
 class WorkGroup : public WorkComponent
 {
     public:
@@ -69,11 +69,19 @@ class WorkGroup : public WorkComponent
         /**
          * @brief Prints out the aggregate state for the group
          */
-        const string& calculateState() const;
+        string calculateState() const;
+
+        /**
+         * @brief A function to help with ownership transferral for decorating a child
+         *
+         * @param target The componenent to be decorated
+         * @param decorator The decorator to use
+         */
+        void decorate(WorkComponent* target, WorkComponent* decorator);
 
     private:
-        string name; /**< The name of this object */
-        vector<WorkComponent*> children; /**< The children of this object (may be EventItems or other EventGroups) */
+       string name; /**< The name of this object */
+       vector<WorkComponent*> children; /**< The children of this object (may be EventItems or other EventGroups) */
 };
 
 #endif // WORKGROUP_H
