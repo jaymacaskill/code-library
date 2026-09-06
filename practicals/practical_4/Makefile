@@ -8,7 +8,7 @@
 # Makefile
 
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -g -MMD -MP
+CXXFLAGS := -std=c++11 -Wall -g
 
 SRC := $(wildcard *.cpp)
 OBJ := $(SRC:.cpp=.o)
