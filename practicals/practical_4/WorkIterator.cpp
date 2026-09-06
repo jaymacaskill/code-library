@@ -3,7 +3,7 @@
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 5 September 2026
+// Last Modified: 6 September 2026
 
 // WorkIterator.cpp
 
@@ -12,6 +12,7 @@
 
 #include "WorkIterator.h"
 #include "WorkComponent.h"
+#include "WorkItem.h"
 
 #include <iostream>
 #include <vector>
@@ -24,40 +25,54 @@ using namespace std;
 
 DepthFirstIterator::DepthFirstIterator(WorkComponent* root)
 {
-    // TODO
-    throw "Not yet implemented";
+    position = 0;
+    if(root)
+        root->appendTo(flattened);
 }
 
 bool DepthFirstIterator::hasNext()
 {
-    // TODO
-    throw "Not yet implemented";
+    return position < flattened.size();
 }
 
-WorkComponent* WorkIterator::next()
+WorkComponent* DepthFirstIterator::next()
 {
-    // TODO
-    throw "Not yet implemented";
+    if (!hasNext())
+        return nullptr;
+
+    return flattened[position ++];
 }
 
 // ==== ACTIVE ONLY ITERATOR ==== //
 
 ActiveOnlyIterator::ActiveOnlyIterator(WorkComponent* root)
 {
-    // TODO
-    throw "Not yet implemented";
+    position = 0;
+    if (!root) return;
+
+    vector<WorkComponent*> temp;
+    root->appendTo(temp);
+
+    for (size_t i = 0; i < temp.size(); i ++)
+    {
+        WorkItem* item = dynamic_cast<WorkItem*>(temp[i]);
+
+        if (item && item->isActive())
+            flattened.push_back(item);
+    }
 }
 
 bool ActiveOnlyIterator::hasNext()
 {
-    // TODO
-    throw "Not yet implemented";
+    return position < flattened.size();
 }
 
 WorkComponent* ActiveOnlyIterator::next()
 {
-    // TODO
-    throw "Not yet implemented";
+    if (!hasNext())
+        return nullptr;
+
+    return flattened[position ++];
 }
 
 #endif // WORKITERATOR_CPP
