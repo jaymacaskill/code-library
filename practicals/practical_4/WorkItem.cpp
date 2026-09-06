@@ -3,7 +3,7 @@
 // Jay Macaskill (25198387)
 
 // COS 214 (Software Modelling) Practical 4
-// Last Modified: 5 September 2026
+// Last Modified: 6 September 2026
 
 // WorkItem.cpp
 
@@ -38,7 +38,7 @@ string WorkItem::getName() const
     return this->name;
 }
 
-void WorkItem::display(int depth = 0) const
+void WorkItem::display(int depth) const
 {
     for (int j = 0; j < depth; j ++)
     {
