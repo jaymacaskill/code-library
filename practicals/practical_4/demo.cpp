@@ -181,7 +181,11 @@ void removingComposite()
 
     WorkComponent* removed = project->remove(task);
    // since this is a short demo, instead of deleting removed, we add it back
-    project->add(removed);
+   if (removed != nullptr) {
+     project->add(removed);
+    } else {
+        cout << "Could not move the task - it wasn't a direct child of this group.\n";
+    }
 }
 
 void status()

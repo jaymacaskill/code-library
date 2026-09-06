@@ -1,0 +1,220 @@
+//Debugging (Segfault)
+
+While running the interactive demo (demo.cpp), selecting option 7 ("Everything At Once") caused the program to crash with a segmentation fault 
+immediately after the "Composite Removal" section printed:
+
+⚠️ This WorkComponent could not be found in this WorkGroup!
+✅ WorkComponent added to WorkGroup successfully!
+📊 PROJECT STATUS 📊
+Segmentation fault (core dumped)
+
+Debugging process (GDB)
+
+The program was rebuilt with debug symbols (-g) and run inside GDB to catch the crash at the exact point of failure:
+
+gdb ./demo
+(gdb) run
+
+After reproducing the crash, a backtrace was taken:
+
+(gdb) bt
+#0  0x000055555555b9d8 in WorkGroup::appendTo (this=0x555555578ad0, out=...) at WorkGroup.cpp:161
+#1  0x000055555555e68a in status () at demo.cpp:192
+#2  0x000055555555ee65 in main () at demo.cpp:286
+
+This identified the crash as occurring inside WorkGroup::appendTo, called from status(). Inspecting the source at that line:
+
+(gdb) list WorkGroup.cpp:161
+159         out.push_back(this);
+160         for (size_t i = 0; i < children.size(); i ++)
+161             children[i]->appendTo(out);
+
+Inspecting the children vector at the point of the crash revealed the actual problem — one element was a null pointer:
+
+(gdb) print children[2]
+$4 = (WorkComponent *) 0x0
+
+Cause
+
+Tracing back to removingComposite() in demo.cpp:
+
+cpp
+WorkComponent* removed = project->remove(task);
+project->add(removed);
+
+WorkGroup::remove() only searches the direct children of the group it is called on. Since task ("UI Design") is nested two levels deep 
+(project → frontend → UI Design), calling project->remove(task) correctly fails to find it and returns nullptr:
+
+cpp
+cout << "⚠️ This WorkComponent could not be found in this WorkGroup!\n";
+return nullptr;
+
+However, the calling code in demo.cpp never checked whether remove() succeeded before immediately re-adding the result:
+
+cpp
+project->add(removed); // removed is nullptr here
+
+This inserted a literal null pointer into project's children vector. The crash did not occur immediately — it only surfaced later, when status() 
+called appendTo(), which iterates over every child and calls appendTo() on each one without checking for null, dereferencing the null pointer and 
+crashing.
+
+Correction
+
+The fix is to check the return value of remove() before using it:
+
+cpp
+WorkComponent* removed = project->remove(task);
+if (removed != nullptr)
+{
+    project->add(removed);
+}
+else
+{
+    cout << "Could not move the task - it wasn't a direct child of this group.\n";
+}
+
+This prevents a null pointer from ever entering the composite structure. A more complete fix would also be to reconsider WorkGroup::remove()'s scope 
+— it currently only searches one level, so a design decision is needed on whether removal should search only direct children (and calling code must 
+know the correct group) or recurse through the whole subtree.
+
+//VALGRIND
+
+senzo@HP:/mnt/c/Users/senzo/Documents/2ND YEAR CS/COS 214/Practical 4/code-library/practicals/practical_4$ valgrind --leak-check=full --show-leak-kinds=all ./demo
+==3506== Memcheck, a memory error detector
+==3506== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==3506== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==3506== Command: ./demo
+==3506== 
+  ___                     ___  
+ (o o)                   (o o) 
+(  V  ) Task Forge Demo (  V  )
+--m-m---------------------m-m--
+
+What is your name?
+Senzo
+
+🪆 COMPOSITE 🪆
+
+ Using composite to build the project...
+✅ WorkComponent added to WorkGroup successfully!
+✅ WorkComponent added to WorkGroup successfully!
+✅ WorkComponent added to WorkGroup successfully!
+✅ WorkComponent added to WorkGroup successfully!
+✅ WorkComponent added to WorkGroup successfully!
+✅ WorkComponent added to WorkGroup successfully!
+
+Project built! 📁
+
+Press Enter to continue...
+1. Show Hierarchy
+2. Traverse Tasks
+3. State
+4. Decorator
+5. Composite Removal
+6. Project Status
+7. Everything At Once
+0. Exit
+
+Choice: 7
+
+📁 PROJECT COMPOSITE HIERARCHY:
+[Group] Project X: Todo 🎯
+  [Group] frontend: Todo 🎯
+    - UI Design (Todo)
+    - API Integration (Todo)
+  [Group] backend: Todo 🎯
+    - Database Design (Todo)
+    - Security Audit (Todo)
+
+🧮 ITERATOR 🧮
+
+🤔 How do you want to traverse the hierarchy?
+1. Active projects only
+2. Everything
+
+2
+  - Project X
+  - frontend
+  - UI Design
+  - API Integration
+  - backend
+  - Database Design
+  - Security Audit
+
+Press Enter to continue...
+
+ 🎯 STATE 🎯
+
+💻A DAY IN THE LIFE OF A TASK
+
+🧔🏻: Senzo, your job today is UI Design. Here are the stats:
+ Task: UI Design
+ State: Todo
+🎯 Todo: [UI Design]
+
+🧔🏻: I see you have started on your task. Your progress is slow. I am going to talk to my supervisors.
+
+🚨 Chris has blocked your task!
+
+UI Design: Blocked
+
+🧔🏻: They are happy for you to continue. Carry on immediately.
+🔎 Unblocking UI Design
+
+UI Design: In Progress
+🔄 [UI Design] Progress: 25%
+
+👤: This task is so boring, can't I just send it to the done state anyway?
+⚠️ [UI Design] is only 25% complete
+
+📚: No you cannot.
+
+UI Design: In Progress
+🔄 [UI Design] Progress: 50%
+🔄 [UI Design] Progress: 75%
+⚠️ [UI Design] is only 75% complete
+
+👤: FINALLY! I finished my task!!
+
+UI Design: In Progress
+
+🎀 DECORATOR 🎀
+
+Decorating with a LoggingDecorator and a PriorityDecorator
+✅ WorkComponent added to WorkGroup successfully!
+⭐ Priority level 1 for task Security Scan
+ 📝 [LOG] Sun Sep  6 19:14:25 2026 Starting execution of: Security Scan
+🎯 Todo: [Security Scan]
+ 📝 [LOG] Sun Sep  6 19:14:25 2026 Completed execution of: Security Scan
+
+📦 COMPOSITE REMOVAL 📦
+Moving: UI Design
+⚠️ This WorkComponent could not be found in this WorkGroup!
+Could not move the task - it wasn't a direct child of this group.
+
+📊 PROJECT STATUS 📊
+  Todo: 3
+  In Progress: 1
+  Blocked: 0
+  Done: 0
+  Overall: In Progress 🕓
+1. Show Hierarchy
+2. Traverse Tasks
+3. State
+4. Decorator
+5. Composite Removal
+6. Project Status
+7. Everything At Once
+0. Exit
+
+Choice: 0
+Goodbye, Senzo! 👋
+==3506== 
+==3506== HEAP SUMMARY:
+==3506==     in use at exit: 0 bytes in 0 blocks
+==3506==   total heap usage: 54 allocs, 54 frees, 81,783 bytes allocated
+==3506== 
+==3506== All heap blocks were freed -- no leaks are possible
+==3506== 
+==3506== For lists of detected and suppressed errors, rerun with: -s
+==3506== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
