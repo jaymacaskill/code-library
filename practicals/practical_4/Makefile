@@ -14,22 +14,32 @@ SRC := $(wildcard *.cpp)
 OBJ := $(SRC:.cpp=.o)
 DEP := $(OBJ:.o=.d)
 TARGET := taskforge
+DEMO_TARGET := demo
 
-all: $(TARGET)
+MAIN_SRC := $(filter-out demo.cpp, $(SRC))
+DEMO_SRC := $(filter-out main.cpp, $(SRC))
 
-$(TARGET): $(OBJ)
+MAIN_OBJ := $(MAIN_SRC:.cpp=.o)
+DEMO_OBJ := $(DEMO_SRC:.cpp=.o)
+
+all: $(TARGET) $(DEMO_TARGET)
+
+$(TARGET): $(MAIN_OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(DEMO_TARGET): $(DEMO_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(TARGET) $(DEP)
+	rm -f $(OBJ) $(DEP) $(TARGET) $(DEMO_TARGET)
 
 valgrind:
-	valgrind ./$(TARGET)
+	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)
 
-gdb:
-	gdb ./$(TARGET)
+valgrind-demo:
+	valgrind --leak-check=full --show-leak-kinds=all ./$(DEMO_TARGET)
 
-.PHONY: all clean valgrind
+.PHONY: all clean valgrind valgrind-demo
