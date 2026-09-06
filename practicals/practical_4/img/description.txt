@@ -1,0 +1,5 @@
+Images needed for the README, in this folder (img/):
+- UML Class Diagram, full system (class.jpg)
+- UML State Diagram (state.jpg)
+- UML Object Diagram (object.jpg)
+- 3 x UML Activity Diagrams (activity_traversal.jpg, activity_state.jpg, activity_decorator.jpg)
