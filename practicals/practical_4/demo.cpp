@@ -22,6 +22,9 @@
 using namespace std;
 
 WorkGroup* project = nullptr;
+WorkGroup* frontend = new WorkGroup("Frontend");
+WorkGroup* backend = new WorkGroup("Backend");
+
 string name = "";
 
 void pressEnterToContinue()
@@ -34,11 +37,8 @@ void pressEnterToContinue()
 void buildProject()
 {
     cout << "\n🪆 COMPOSITE 🪆\n";
-    cout << "\n Using composite to build the project...\n";
+    cout << "\nUsing composite to build the project...\n";
     project = new WorkGroup("Project X");
-
-    WorkGroup* frontend = new WorkGroup("frontend");
-    WorkGroup* backend = new WorkGroup("backend");
 
     frontend->add(new WorkItem("UI Design"));
     frontend->add(new WorkItem("API Integration"));
@@ -123,32 +123,41 @@ void demoState()
     project->appendTo(items);
     WorkItem* task = dynamic_cast<WorkItem*>(items[2]);
 
-    cout << "\n🧔🏻: " << name << ", your job today is " << task->getName() << ". Here are the stats:\n";
-    cout << " Task: " << task->getName() << "\n";
-    cout << " State: " << task->getState()->getName() << "\n";
+    if (task->getState()->getName() != "Done")
+    {
+        cout << "\n🧔🏻: " << name << ", your job today is " << task->getName() << ". Here are the stats:\n";
+        cout << " Task: " << task->getName() << "\n";
+        cout << " State: " << task->getState()->getName() << "\n";
 
-    task->execute();
-    cout << "\n🧔🏻: I see you have started on your task. Your progress is slow. I am going to talk to my supervisors.\n";
-    cout << "\n🚨 Chris has blocked your task!\n";
-    task->block();
-    cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
+        task->execute();
+        cout << "\n🧔🏻: I see you have started on your task. Your progress is slow. I am going to talk to my supervisors.\n";
+        cout << "\n🚨 Chris has blocked your task!\n";
+        task->block();
+        cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
 
-    cout << "\n🧔🏻: They are happy for you to continue. Carry on immediately.\n";
-    task->getState()->next(task);
-    cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
-    task->execute();
+        cout << "\n🧔🏻: They are happy for you to continue. Carry on immediately.\n";
+        task->getState()->next(task);
+        cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
+        task->execute();
 
-    cout << "\n👤: This task is so boring, can't I just send it to the done state anyway?\n";
-    task->getState()->next(task);
-    cout << "\n📚: No you cannot.\n";
-    cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
+        cout << "\n👤: This task is so boring, can't I just send it to the done state anyway?\n";
+        task->getState()->next(task);
+        cout << "\n📚: No you cannot.\n";
+        cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
 
-    task->execute();
-    task->execute();
-    task->getState()->next(task);
+        task->execute();
+        task->execute();
+        task->execute();
+        task->getState()->next(task);
 
-    cout << "\n👤: FINALLY! I finished my task!!\n";
-    cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
+        cout << "\n👤: FINALLY! I finished my task!!\n";
+        cout << "\n" << task->getName() << ": " << task->getState()->getName() << "\n";
+    }
+    else if (task->getState()->getName() == "Done")
+    {
+        task->execute();
+        cout << "\n🧔🏻: Good work, " << name << "! The other teams will take it from here.\n";
+    }
 }
 
 void demoDecorator()
@@ -179,8 +188,9 @@ void removingComposite()
 
     cout << "Moving: " << task->getName() << "\n";
 
-    WorkComponent* removed = project->remove(task);
-   // since this is a short demo, instead of deleting removed, we add it back
+    WorkComponent* removed = frontend->remove(task);
+   // since this is a short demo, instead of deleting removed, we add it back to the project
+    cout << "[" << task->getName() << "] has been moved from frontend to main project!\n";
     project->add(removed);
 }
 
