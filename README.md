@@ -25,7 +25,7 @@ and Tasks can also stand alone. Every Task moves through a lifecycle (`Todo → 
 Blocked → Done`), can be decorated with extra responsibilities at runtime (priority, logging), and
 the whole tree can be traversed either completely or filtered down to just what's still active.
 
-<a href="practicals/practical_4/doc/COS_214_PA_4.pdf">here</a>
+For the full PDF with required tasks, click <a href="practicals/practical_4/doc/COS_214_PA_4.pdf">here</a>
 
 ### Example structure
 
