@@ -25,6 +25,8 @@ and Tasks can also stand alone. Every Task moves through a lifecycle (`Todo → 
 Blocked → Done`), can be decorated with extra responsibilities at runtime (priority, logging), and
 the whole tree can be traversed either completely or filtered down to just what's still active.
 
+<a href="practicals/practical_4/doc/COS_214_PA_4.pdf">here</a>
+
 ### Example structure
 
 ```
@@ -89,19 +91,31 @@ TaskForge is built around four collaborating GoF patterns:
 <p align="center">
   <img src="practicals/practical_4/img/activity_traversal.jpg" width="600" alt="Activity diagram: traversal workflow" />
   <br/>
-  <sub><em>Activity diagram — adding and traversing tasks</em></sub>
+  <sub><em>Activity diagram — building and traversing tasks</em></sub>
+</p>
+
+<p align="center">
+  <img src="practicals/practical_4/img/print_traversal.jpg" width="600" alt="Activity diagram: traversal workflow" />
+  <br/>
+  <sub><em>Activity diagram — print traversal</em></sub>
 </p>
 
 <p align="center">
   <img src="practicals/practical_4/img/activity_state.jpg" width="600" alt="Activity diagram: state transition workflow" />
   <br/>
-  <sub><em>Activity diagram — state transition with guard conditions</em></sub>
+  <sub><em>Activity diagram — state and decorator lifecycle</em></sub>
 </p>
 
 <p align="center">
-  <img src="practicals/practical_4/img/activity_decorator.jpg" width="600" alt="Activity diagram: decorator workflow" />
+  <img src="practicals/practical_4/img/activity_iterator.jpg" width="600" alt="Activity diagram: decorator workflow" />
   <br/>
-  <sub><em>Activity diagram — decorating and notifying, with a fork/join and swimlanes</em></sub>
+  <sub><em>Activity diagram — iterator policy</em></sub>
+</p>
+
+<p align="center">
+  <img src="practicals/practical_4/img/print_traversal(2).jpg" width="600" alt="Activity diagram: traversal workflow" />
+  <br/>
+  <sub><em>Activity diagram — print traversal</em></sub>
 </p>
 
 ---
